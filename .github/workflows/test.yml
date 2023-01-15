@@ -24,25 +24,27 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14
-      - uses: actions/cache@v2
-        id: client-npm-cache
+
+      - uses: pnpm/action-setup@v2
         with:
-          path: "node_modules"
-          key: client-npm-${{ hashFiles('package-lock.json') }}
-      - uses: actions/cache@v2
-        id: server-npm-cache
-        with:
-          path: "server/node_modules"
-          key: server-npm-${{ hashFiles('server/package-lock.json') }}
-      - run: npm install
-        if: steps.client-npm-cache.outputs.cache-hit != 'true'
-      - run: npm install --prefix server
-        if: steps.server-npm-cache.outputs.cache-hit != 'true'
-      - run: npm run lint
+          version: 7
+
+      # - uses: actions/cache@v2
+      #   id: client-npm-cache
+      #   with:
+      #     path: "node_modules"
+      #     key: client-npm-${{ hashFiles('package-lock.json') }}
+      # - uses: actions/cache@v2
+      #   id: server-npm-cache
+      #   with:
+      #     path: "server/node_modules"
+      #     key: server-npm-${{ hashFiles('server/package-lock.json') }}
+      - run: pnpm install
+      - run: pnpm run lint
       - run: echo "API_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/test" > server/prisma/.env
-      - run: npm run typecheck
+      - run: pnpm run typecheck
       - run: |
-          npm run migrate:dev
-          npm test
+          pnpm run migrate:dev
+          pnpm test
         env:
           API_JWT_SECRET: test_secret
