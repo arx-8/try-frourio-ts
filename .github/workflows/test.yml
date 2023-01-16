@@ -40,6 +40,7 @@ jobs:
       #     path: "server/node_modules"
       #     key: server-npm-${{ hashFiles('server/package-lock.json') }}
       - run: pnpm install
+      - run: pnpm run generate
       - run: pnpm run lint
       - run: echo "API_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/test" > server/prisma/.env
       - run: pnpm run typecheck
